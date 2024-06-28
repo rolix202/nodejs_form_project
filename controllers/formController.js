@@ -1,8 +1,8 @@
 import { body, validationResult } from "express-validator"
 
-export const getForm = (req, res, next) => {
-    res.render("form")
-}
+export const getForm = (req, res) => {
+    res.render("form", { user: {}});
+};
 
 export const postForm = [
     body("first_name")
@@ -29,10 +29,6 @@ export const postForm = [
     (req, res, next) => {
         const errors = validationResult(req)
 
-        if(!errors.isEmpty()){
-            return res.render("form", {errors: errors.array()})
-        }
-
         const {first_name, last_name, email, password} = req.body
 
         const user = {
@@ -40,6 +36,13 @@ export const postForm = [
             lastName: last_name,
             email: email,
             password: password
+        }
+
+        if(!errors.isEmpty()){
+            return res.render("form", {
+                user,
+                errors: errors.array()
+            })
         }
 
         // Store user data in session
